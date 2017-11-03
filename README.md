@@ -34,6 +34,11 @@
 curl -X GET -H "Cache-Control: no-cache" "http://localhost:54321/jobs"
 ```
 
+* swagger url:
+```shell
+localhost:54321/swagger-ui.html
+```
+
 * 添加任务接口
 ```shell
 curl -X POST -H "Content-Type: application/json" -H "Cache-Control: no-cache" -d '{
