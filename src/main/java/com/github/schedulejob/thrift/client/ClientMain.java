@@ -1,7 +1,7 @@
 package com.github.schedulejob.thrift.client;
 
-import com.github.schedulejob.thrift.protocol.TReq;
 import com.github.schedulejob.thrift.protocol.HelloService;
+import com.github.schedulejob.thrift.protocol.TReq;
 import com.github.schedulejob.thrift.protocol.TResp;
 
 import org.apache.thrift.TException;
@@ -9,6 +9,8 @@ import org.apache.thrift.protocol.TCompactProtocol;
 import org.apache.thrift.protocol.TMultiplexedProtocol;
 import org.apache.thrift.transport.TFramedTransport;
 import org.apache.thrift.transport.TSocket;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Thrift客户端
@@ -17,6 +19,8 @@ import org.apache.thrift.transport.TSocket;
  * @since: 2016-7-11 16:31
  */
 public class ClientMain {
+    private static final Logger log = LoggerFactory.getLogger(ClientMain.class);
+
     private static final int PORT = 7777;
 
     public static void main(String[] args) {
@@ -33,7 +37,7 @@ public class ClientMain {
             tFramedTransport.open();
             tResp = helloService.sayHi(tReq);
         } catch (TException e) {
-            e.printStackTrace();
+            log.error("thift client error!", e);
         } finally {
             tFramedTransport.close();
         }

@@ -47,7 +47,7 @@ public class ServerMain {
             log.info("server start listen on {0}...", PORT);
             server.serve();
         } catch (TTransportException e) {
-            e.printStackTrace();
+            log.error("thift server error!", e);
         }
     }
 }

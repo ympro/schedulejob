@@ -1,5 +1,8 @@
 package com.github.schedulejob.util;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -11,6 +14,7 @@ import java.util.concurrent.TimeUnit;
  * @since: 2016-7-22 12:34
  */
 public class TestElapsedTimeUtils {
+    private static final Logger log = LoggerFactory.getLogger(TestElapsedTimeUtils.class);
     private static final ScheduledExecutorService EXECUTOR = Executors.newScheduledThreadPool(1);
 
     public static void main(String[] args) {
@@ -22,7 +26,7 @@ public class TestElapsedTimeUtils {
             try {
                 Thread.sleep(200);
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                log.error("error!", e);
             }
         }, 1, 2, TimeUnit.SECONDS);
     }

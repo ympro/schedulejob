@@ -1,11 +1,14 @@
 package com.github.schedulejob.util;
 
+import com.google.common.collect.Sets;
+
 import com.fasterxml.jackson.databind.JsonNode;
-import com.github.schedulejob.common.RetCode;
 import com.github.schedulejob.common.Response;
+import com.github.schedulejob.common.RetCode;
 import com.github.schedulejob.common.RetCodeConst;
 
-import com.google.common.collect.Sets;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Field;
 import java.text.MessageFormat;
@@ -28,6 +31,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * Created by lvhao on 2016-7-6.
  */
 public class ResponseUtils {
+    private static final Logger log = LoggerFactory.getLogger(ResponseUtils.class);
 
     // 本地response类型
     private static final Class<Response> LOCAL_RESPONSE_CLASS = Response.class;
@@ -191,9 +195,9 @@ public class ResponseUtils {
         try {
             result = clazz.newInstance();
         } catch (InstantiationException e) {
-            e.printStackTrace();
+            log.error("getDefaultInstance error!", e);
         } catch (IllegalAccessException e) {
-            e.printStackTrace();
+            log.error("getDefaultInstance illegal error!", e);
         }
         return result;
     }
@@ -208,7 +212,7 @@ public class ResponseUtils {
         try {
             field.set(t, v);
         } catch (IllegalAccessException e) {
-            e.printStackTrace();
+            log.error("invokeWriteMethod error!", e);
         }
     }
 
@@ -222,7 +226,7 @@ public class ResponseUtils {
         try {
             return field.get(t);
         } catch (IllegalAccessException e) {
-            e.printStackTrace();
+            log.error("invokeReadMethod error!", e);
         }
         return null;
     }
