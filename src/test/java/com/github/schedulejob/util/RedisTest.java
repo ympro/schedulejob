@@ -16,8 +16,8 @@ public class RedisTest extends BaseTest {
     private StringRedisTemplate stringRedisTemplate;
 
     @Test
-    public void addV(){
-        stringRedisTemplate.opsForValue().set("nowTest","hello world");
+    public void addV() {
+        stringRedisTemplate.opsForValue().set("nowTest", "hello world");
         String v = stringRedisTemplate.opsForValue().get("nowTest");
         System.out.println("v = " + v);
     }

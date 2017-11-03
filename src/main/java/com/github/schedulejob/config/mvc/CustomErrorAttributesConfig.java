@@ -1,6 +1,7 @@
 package com.github.schedulejob.config.mvc;
 
 import com.github.schedulejob.common.RetCodeConst;
+
 import org.springframework.boot.autoconfigure.web.DefaultErrorAttributes;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.context.request.RequestAttributes;
@@ -18,7 +19,7 @@ public class CustomErrorAttributesConfig extends DefaultErrorAttributes {
 
     @Override
     public Map<String, Object> getErrorAttributes(RequestAttributes requestAttributes, boolean includeStackTrace) {
-        Map<String,Object> errorAttributes = super.getErrorAttributes(requestAttributes, includeStackTrace);
+        Map<String, Object> errorAttributes = super.getErrorAttributes(requestAttributes, includeStackTrace);
         errorAttributes.put("retCode", RetCodeConst.ERROR);
         errorAttributes.remove("timestamp");
         errorAttributes.remove("error");

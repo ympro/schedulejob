@@ -40,6 +40,6 @@ public class AutowiringQuartzJobFactory extends SpringBeanJobFactory implements 
     public void setIgnoredUnknownProperties(String... ignoredUnknownProperties) {
         List<String> ignoreList = Arrays.asList(ignoredUnknownProperties);
         ignoreList.add("applicationContext");
-        super.setIgnoredUnknownProperties(ignoreList.stream().toArray(String[]::new));
+        super.setIgnoredUnknownProperties(ignoreList.toArray(new String[0]));
     }
 }

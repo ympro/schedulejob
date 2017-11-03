@@ -1,6 +1,7 @@
 package com.github.schedulejob.config.datasource;
 
 import com.github.schedulejob.common.AppConst;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,27 +21,28 @@ public class DataSourceContextHolder {
     private static final ThreadLocal<String> dbContext = new ThreadLocal<>();
     private static final Set<String> supportedDbKeySet = new HashSet<>();
 
-    public static void appendDbKey2Set(String... dbKey){
+    public static void appendDbKey2Set(String... dbKey) {
         supportedDbKeySet.addAll(Arrays.asList(dbKey));
     }
 
-    public static String getCurrentDbKey(){
+    public static String getCurrentDbKey() {
         return dbContext.get();
     }
-    public static void initDbContext(String dbKey){
-        if(!isValid(dbKey)) {
+
+    public static void initDbContext(String dbKey) {
+        if (!isValid(dbKey)) {
             dbKey = AppConst.DbKey.DEFAULT;
-            log.warn("dbKey[{}]不合法,初始化默认数据源=>{}",dbKey, AppConst.DbKey.DEFAULT);
+            log.warn("dbKey[{}]不合法,初始化默认数据源=>{}", dbKey, AppConst.DbKey.DEFAULT);
         }
         dbContext.set(dbKey);
-        log.info("use db [{}]",dbKey);
+        log.info("use db [{}]", dbKey);
     }
 
-    public static void destroyDbContext(){
+    public static void destroyDbContext() {
         dbContext.remove();
     }
 
-    private static boolean isValid(String dbKey){
+    private static boolean isValid(String dbKey) {
         return supportedDbKeySet.contains(dbKey);
     }
 }

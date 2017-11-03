@@ -1,6 +1,7 @@
 package com.github.schedulejob.config.quartz;
 
 import com.github.schedulejob.config.ExternalPathConfig;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,7 +41,7 @@ public class QuartzConfig {
     }
 
     @Bean
-    public SchedulerFactoryBean init(){
+    public SchedulerFactoryBean init() {
         SchedulerFactoryBean schedulerFactoryBean = new SchedulerFactoryBean();
         schedulerFactoryBean.setDataSource(dataSource);
         schedulerFactoryBean.setTransactionManager(platformTransactionManager);

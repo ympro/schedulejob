@@ -1,6 +1,7 @@
 package com.github.schedulejob.config.okhttp3;
 
 import okhttp3.OkHttpClient;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -14,14 +15,14 @@ import java.util.concurrent.TimeUnit;
 public class OkHttp3ClientConfig {
 
     @Bean
-    public OkHttpClient okHttpClient(){
+    public OkHttpClient okHttpClient() {
 
         // 缺省 带有连接池
         return new OkHttpClient.Builder()
                 .retryOnConnectionFailure(true)
                 .connectTimeout(60, TimeUnit.SECONDS)
-                .writeTimeout(10,TimeUnit.SECONDS)
-                .readTimeout(10,TimeUnit.SECONDS)
+                .writeTimeout(10, TimeUnit.SECONDS)
+                .readTimeout(10, TimeUnit.SECONDS)
                 .build();
     }
 }

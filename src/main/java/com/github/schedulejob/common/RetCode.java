@@ -9,13 +9,13 @@ public final class RetCode {
     private String code;
     private String msg;
 
-    private RetCode(String code, String msg){
+    private RetCode(String code, String msg) {
         this.code = code;
         this.msg = msg;
     }
 
-    public static RetCode of(String code, String msg){
-        return new RetCode(code,msg);
+    public static RetCode of(String code, String msg) {
+        return new RetCode(code, msg);
     }
 
     public String getCode() {

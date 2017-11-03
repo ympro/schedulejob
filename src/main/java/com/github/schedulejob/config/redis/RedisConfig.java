@@ -19,19 +19,19 @@ public class RedisConfig {
     private static final String REDIS_CONFIG_PREFIX = "cache.redis";
 
     @Bean
-    @ConfigurationProperties(prefix=POOL_CONFIG_PREFIX)
-    public JedisPoolConfig jedisPoolConfig(){
+    @ConfigurationProperties(prefix = POOL_CONFIG_PREFIX)
+    public JedisPoolConfig jedisPoolConfig() {
         return new JedisPoolConfig();
     }
 
     @Bean
-    @ConfigurationProperties(prefix=REDIS_CONFIG_PREFIX)
-    public JedisConnectionFactory jedisConnectionFactory(){
+    @ConfigurationProperties(prefix = REDIS_CONFIG_PREFIX)
+    public JedisConnectionFactory jedisConnectionFactory() {
         return new JedisConnectionFactory();
     }
 
     @Bean
-    public StringRedisTemplate redisTemplate(){
+    public StringRedisTemplate redisTemplate() {
         StringRedisTemplate template = new StringRedisTemplate();
         JedisConnectionFactory jcf = jedisConnectionFactory();
         jcf.setPoolConfig(jedisPoolConfig());

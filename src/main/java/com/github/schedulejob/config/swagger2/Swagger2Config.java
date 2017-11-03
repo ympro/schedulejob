@@ -2,6 +2,7 @@ package com.github.schedulejob.config.swagger2;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
@@ -30,7 +31,7 @@ public class Swagger2Config {
     }
 
     private ApiInfo apiInfo() {
-        Contact contact = new Contact("lvhao","http://localhost:54321/","lvhao127@gmail.com");
+        Contact contact = new Contact("lvhao", "http://localhost:54321/", "lvhao127@gmail.com");
         return new ApiInfoBuilder()
                 .title("Quartz API 文档")
                 .description("Quartz API 相关文档")

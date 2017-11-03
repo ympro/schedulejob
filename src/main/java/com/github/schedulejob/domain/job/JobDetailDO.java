@@ -2,6 +2,7 @@ package com.github.schedulejob.domain.job;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+
 import org.quartz.CronTrigger;
 import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
@@ -22,7 +23,7 @@ import java.util.stream.Collectors;
  * @author: lvhao
  * @since: 2016-6-23 20:43
  */
-@ApiModel(value="JobDetailDO", description="Quartz JodDetail 等价类")
+@ApiModel(value = "JobDetailDO", description = "Quartz JodDetail 等价类")
 public class JobDetailDO {
 
     @ApiModelProperty
@@ -45,7 +46,7 @@ public class JobDetailDO {
         jobDO.setTargetClass(jd.getJobClass().getCanonicalName());
 
         // ext
-        JobDataMap jdm= jd.getJobDataMap();
+        JobDataMap jdm = jd.getJobDataMap();
         if (Objects.nonNull(jdm)) {
             jobDO.setExtInfo(jdm.getWrappedMap());
         }
@@ -57,7 +58,7 @@ public class JobDetailDO {
     public transient Consumer<List<Trigger>> fillWithQuartzTriggers = trList -> {
 
         // triggers
-        Set<TriggerDO> tdSet = trList.stream().map(tr ->{
+        Set<TriggerDO> tdSet = trList.stream().map(tr -> {
             TriggerDO td = new TriggerDO();
             if (tr instanceof CronTrigger) {
                 CronTrigger ctr = (CronTrigger) tr;

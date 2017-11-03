@@ -1,6 +1,7 @@
 package com.github.schedulejob.mapper;
 
 import com.github.schedulejob.po.TicketPO;
+
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -15,6 +16,8 @@ import java.util.List;
 @Mapper
 public interface TicketMapper {
     int queryCount(@Param("id") int id);
+
     List<TicketPO> queryList();
+
     void updateStock(@Param("id") int id);
 }

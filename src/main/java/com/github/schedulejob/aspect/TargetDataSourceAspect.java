@@ -4,6 +4,7 @@ package com.github.schedulejob.aspect;
 import com.github.schedulejob.anno.TargetDataSource;
 import com.github.schedulejob.common.AppConst;
 import com.github.schedulejob.config.datasource.DataSourceContextHolder;
+
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -31,34 +32,35 @@ public class TargetDataSourceAspect {
      * 任何public方法
      */
     @Pointcut(value = "execution(public * *(..))")
-    public void anyPublicMethod() {}
+    public void anyPublicMethod() {
+    }
 
     /**
      * 任何标记了注解的类
-     * @param targetDataSource
      */
     @Pointcut(value = "@within(targetDataSource)", argNames = "targetDataSource")
-    public void annotationOnClass(TargetDataSource targetDataSource){}
+    public void annotationOnClass(TargetDataSource targetDataSource) {
+    }
 
     /**
      * 任何标记了注解的方法
-     * @param targetDataSource
      */
     @Pointcut(value = "@annotation(targetDataSource)", argNames = "targetDataSource")
-    public void annotationOnMethod(TargetDataSource targetDataSource){}
+    public void annotationOnMethod(TargetDataSource targetDataSource) {
+    }
 
     @Around(
-        value = "anyPublicMethod() && (annotationOnMethod(targetDataSource) || annotationOnClass(targetDataSource))",
-        argNames = "proceedingJoinPoint,targetDataSource"
+            value = "anyPublicMethod() && (annotationOnMethod(targetDataSource) || annotationOnClass(targetDataSource))",
+            argNames = "proceedingJoinPoint,targetDataSource"
     )
     public Object methodInvoke(
             ProceedingJoinPoint proceedingJoinPoint,
             TargetDataSource targetDataSource) throws Throwable {
-        checkNotNull(targetDataSource,"@TargetDataSource为空");
+        checkNotNull(targetDataSource, "@TargetDataSource为空");
         Class<?> clazz = proceedingJoinPoint.getTarget().getClass();
 
         // 类上是否标注了注解
-        if(clazz.isAnnotationPresent(TargetDataSource.class)){
+        if (clazz.isAnnotationPresent(TargetDataSource.class)) {
             targetDataSource = clazz.getAnnotationsByType(TargetDataSource.class)[0];
         }
 
@@ -67,7 +69,7 @@ public class TargetDataSourceAspect {
         Method method = ms.getMethod();
 
         // 方法是否标注了注解 TargetDataSource
-        if(method.isAnnotationPresent(TargetDataSource.class)){
+        if (method.isAnnotationPresent(TargetDataSource.class)) {
             targetDataSource = method.getAnnotationsByType(TargetDataSource.class)[0];
         }
 

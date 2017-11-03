@@ -2,11 +2,7 @@ package com.github.schedulejob.schedule;
 
 import com.github.schedulejob.common.AppConst;
 import com.github.schedulejob.util.ElapsedTimeUtils;
-import okhttp3.MediaType;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.RequestBody;
-import okhttp3.Response;
+
 import org.quartz.Job;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
@@ -19,6 +15,12 @@ import org.springframework.stereotype.Component;
 
 import java.text.MessageFormat;
 import java.util.Objects;
+
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 /**
  * Http任务封装
@@ -38,11 +40,8 @@ public class HttpJob implements Job {
 
     /**
      * 构造 request
-     * @param url
-     * @param jsonParams
-     * @return
      */
-    public static Request buildRequest(String method,String url,String jsonParams){
+    public static Request buildRequest(String method, String url, String jsonParams) {
         Request.Builder builder = new Request.Builder();
         Request request = null;
         if (Objects.equals(method, AppConst.HttpMethod.GET)) {
@@ -50,7 +49,7 @@ public class HttpJob implements Job {
                     .get()
                     .build();
         } else {
-            RequestBody body = RequestBody.create(JSON,jsonParams);
+            RequestBody body = RequestBody.create(JSON, jsonParams);
             request = builder.url(url)
                     .post(body)
                     .build();
@@ -61,12 +60,12 @@ public class HttpJob implements Job {
     @Override
     public void execute(JobExecutionContext context) throws JobExecutionException {
         JobKey jobKey = context.getJobDetail().getKey();
-        String uniqueKey = MessageFormat.format("{0}[{1}]",jobKey.getGroup(),jobKey.getName());
+        String uniqueKey = MessageFormat.format("{0}[{1}]", jobKey.getGroup(), jobKey.getName());
         JobDataMap jobDataMap = context.getJobDetail().getJobDataMap();
         String url = String.valueOf(jobDataMap.get("url"));
         String method = String.valueOf(jobDataMap.get("method"));
         String jsonStr = String.valueOf(jobDataMap.get("jsonParams"));
-        Request request = buildRequest(method,url,jsonStr);
+        Request request = buildRequest(method, url, jsonStr);
         Response response = null;
         ElapsedTimeUtils.time(uniqueKey);
         String result = null;
@@ -76,14 +75,12 @@ public class HttpJob implements Job {
                 result = response.body().string();
             }
         } catch (Exception e) {
-            log.error("http调用出错",e);
+            log.error("http调用出错", e);
         } finally {
-            log.info("method:{} | url:{} | params:{} | resp: {}",new Object[]{
-                method,
-                url,
-                jsonStr,
-                result
-            });
+            log.info("method:{} | url:{} | params:{} | resp: {}", method,
+                    url,
+                    jsonStr,
+                    result);
             if (Objects.nonNull(response)) {
                 response.close();
             }

@@ -20,29 +20,29 @@ public class DataSourceConfig extends AbstractDataSourceConfig {
     ////////////////////////////////////////////////////
     //  dev 环境配置文件 Environment properties
     ////////////////////////////////////////////////////
+
     /**
      * 从默认配置文件出读取db配置
      * 此处需要写上classpath 否则无法找到资源 导致绑定失败
      * 具体查看如下方法
      * {@link org.springframework.core.io.DefaultResourceLoader#getResource}
-     * @return
      */
     @Bean
-    @ConfigurationProperties(prefix= DB_DEFAULT_PREFIX)
+    @ConfigurationProperties(prefix = DB_DEFAULT_PREFIX)
     @Override
     public DataSource defaultDataSource() {
         return DataSourceBuilder.create().build();
     }
 
     @Bean
-    @ConfigurationProperties(prefix= DB_READ_PREFIX)
+    @ConfigurationProperties(prefix = DB_READ_PREFIX)
     @Override
     public DataSource readDataSource() {
         return DataSourceBuilder.create().build();
     }
 
     @Bean
-    @ConfigurationProperties(prefix= DB_WRITE_PREFIX)
+    @ConfigurationProperties(prefix = DB_WRITE_PREFIX)
     @Override
     public DataSource writeDataSource() {
         return DataSourceBuilder.create().build();

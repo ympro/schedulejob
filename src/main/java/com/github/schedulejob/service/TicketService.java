@@ -6,6 +6,7 @@ import com.github.schedulejob.mapper.TicketMapper;
 import com.github.schedulejob.po.TicketPO;
 import com.github.schedulejob.anno.TargetDataSource;
 import com.github.schedulejob.domain.TicketDO;
+
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,18 +24,18 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 @TargetDataSource(AppConst.DbKey.READ)
-public class TicketService extends BaseService{
+public class TicketService extends BaseService {
 
     @Autowired
     private TicketMapper ticketMapper;
 
     @Transactional(readOnly = true)
     @TargetDataSource(AppConst.DbKey.READ)
-    public int queryCount(int id){
+    public int queryCount(int id) {
         return ticketMapper.queryCount(id);
     }
 
-    public List<TicketDO> queryList(){
+    public List<TicketDO> queryList() {
         List<TicketPO> ticketPOList = ticketMapper.queryList();
         return ticketPOList.stream().map(po -> {
             TicketDO ticketDO = new TicketDO();
@@ -44,14 +45,14 @@ public class TicketService extends BaseService{
     }
 
     @TargetDataSource(AppConst.DbKey.WRITE)
-    public void updateStock(int id){
+    public void updateStock(int id) {
         ticketMapper.updateStock(id);
     }
 
     @TargetDataSource(AppConst.DbKey.WRITE)
-    public String buyNow(int id){
+    public String buyNow(int id) {
         int cnt = this.queryCount(id);
-        if(cnt > 0){
+        if (cnt > 0) {
             this.updateStock(id);
             return "ok";
         }

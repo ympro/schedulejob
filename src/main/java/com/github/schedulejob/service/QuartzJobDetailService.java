@@ -2,9 +2,9 @@ package com.github.schedulejob.service;
 
 import com.google.common.collect.Lists;
 
+import com.github.schedulejob.config.quartz.QuartzConfig;
 import com.github.schedulejob.domain.job.JobDetailDO;
 
-import org.quartz.CronTrigger;
 import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
 import org.quartz.JobKey;
@@ -12,6 +12,8 @@ import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.quartz.Trigger;
 import org.quartz.impl.matchers.GroupMatcher;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,6 +33,7 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 public class QuartzJobDetailService extends BaseService {
+    private static final Logger log = LoggerFactory.getLogger(QuartzConfig.class);
 
     // SchedulerFactoryBean 创建
     @Autowired
@@ -38,16 +41,26 @@ public class QuartzJobDetailService extends BaseService {
 
     // 任务列表
     @Transactional(readOnly = true)
-    public List<JobDetailDO> queryJobList(){
+    public List<JobDetailDO> queryJobList() {
         List<JobDetailDO> jobDetailDOs = Lists.newArrayList();
 
         // 数据处理
-        Function<Set<JobKey>,List<JobDetailDO>> copyPropFun = jbst -> {
-            List<JobDetailDO> jddList = Lists.newArrayList();
-            jddList = jbst.stream().map(jk ->{
-                JobDetail jd = null;
+        try {
+            Function<Set<JobKey>, List<JobDetailDO>> copyPropFun = dataFunc();
+            Set<JobKey> jobSet = scheduler.getJobKeys(GroupMatcher.anyJobGroup());
+            jobDetailDOs = copyPropFun.apply(jobSet);
+        } catch (SchedulerException e) {
+            log.error("queryJobList error!", e);
+        }
+        return jobDetailDOs;
+    }
+
+    private Function<Set<JobKey>, List<JobDetailDO>> dataFunc() {
+        return jbst -> {
+            List<JobDetailDO> jddList;
+            jddList = jbst.stream().map(jk -> {
                 List<Trigger> trList = this.getTriggerByKey(jk);
-                jd = this.getJobDetailByKey(jk);
+                JobDetail jd = this.getJobDetailByKey(jk);
 
                 // jobDetail
                 JobDetailDO jobDetailDO = new JobDetailDO();
@@ -57,23 +70,13 @@ public class QuartzJobDetailService extends BaseService {
             }).collect(Collectors.toList());
             return jddList;
         };
-
-        try {
-            Set<JobKey> jobSet = scheduler.getJobKeys(GroupMatcher.anyJobGroup());
-            jobDetailDOs = copyPropFun.apply(jobSet);
-        } catch (SchedulerException e) {
-            e.printStackTrace();
-        }
-        return jobDetailDOs;
     }
 
     /**
      * 查询指定jobkey jobDetail
-     * @param jobKey
-     * @return
      */
     @Transactional(readOnly = true)
-    public JobDetailDO queryByKey(JobKey jobKey){
+    public JobDetailDO queryByKey(JobKey jobKey) {
         JobDetailDO jobDetailDO = new JobDetailDO();
         JobDetail jobDetail = this.getJobDetailByKey(jobKey);
         if (Objects.nonNull(jobDetail)) {
@@ -86,120 +89,113 @@ public class QuartzJobDetailService extends BaseService {
 
     /**
      * 添加任务
-     * @param jobDetailDO
      */
-    public boolean   add(JobDetailDO jobDetailDO) {
+    public boolean add(JobDetailDO jobDetailDO) {
         JobDetail jobDetail = jobDetailDO.getJobDO().convert2QuartzJobDetail();
-        Set<CronTrigger> triggerSet = jobDetailDO.getTriggerDOs().stream().map(jtd ->
-            jtd.convert2QuartzTrigger(jobDetail)
+        Set<Trigger> triggerSet = jobDetailDO.getTriggerDOs().stream().map(jtd ->
+                jtd.convert2QuartzTrigger(jobDetail)
         ).collect(Collectors.toSet());
 
         // 如果已经存在 则替换
         try {
-            scheduler.scheduleJob(jobDetail,triggerSet,true);
+            scheduler.scheduleJob(jobDetail, triggerSet, true);
             return true;
         } catch (SchedulerException e) {
-            e.printStackTrace();
+            log.error("add error!", e);
         }
         return false;
     }
 
     /**
      * 删除任务
-     *
-     * @param jobKeyList
      */
-    public boolean remove(List<JobKey> jobKeyList){
+    public boolean remove(List<JobKey> jobKeyList) {
         try {
             return scheduler.deleteJobs(jobKeyList);
         } catch (SchedulerException e) {
-            e.printStackTrace();
+            log.error("remove error!", e);
         }
         return false;
     }
 
     // 停用任务
-    public boolean disable(GroupMatcher<JobKey> matcher){
+    public boolean disable(GroupMatcher<JobKey> matcher) {
         try {
             scheduler.pauseJobs(matcher);
             return true;
         } catch (SchedulerException e) {
-            e.printStackTrace();
+            log.error("disable error!", e);
         }
         return false;
     }
 
     // 停用所有任务
-    public boolean disableAll(){
+    public boolean disableAll() {
         try {
             scheduler.pauseAll();
             return true;
         } catch (SchedulerException e) {
-            e.printStackTrace();
+            log.error("disableAll error!", e);
         }
         return false;
     }
 
     // 启用任务
-    public boolean enable(GroupMatcher<JobKey> matcher){
+    public boolean enable(GroupMatcher<JobKey> matcher) {
         try {
             scheduler.resumeJobs(matcher);
             return true;
         } catch (SchedulerException e) {
-            e.printStackTrace();
+            log.error("enable error!", e);
         }
         return false;
     }
 
     // 启用所有任务
-    public boolean enableAll(){
+    public boolean enableAll() {
         try {
             scheduler.resumeAll();
             return true;
         } catch (SchedulerException e) {
-            e.printStackTrace();
+            log.error("enableAll erroe!", e);
         }
         return false;
     }
 
     // 立即触发任务
-    public boolean triggerNow(JobKey jobKey, JobDataMap jobDataMap){
+    public boolean triggerNow(JobKey jobKey, JobDataMap jobDataMap) {
         try {
-            scheduler.triggerJob(jobKey,jobDataMap);
+            scheduler.triggerJob(jobKey, jobDataMap);
             return true;
         } catch (SchedulerException e) {
-            e.printStackTrace();
+            log.error("triggerNow error!", e);
         }
         return false;
     }
 
     /**
      * 根据key 获取jobDetail
-     * @param jobKey
-     * @return
      */
     @Transactional(readOnly = true)
-    public JobDetail getJobDetailByKey(JobKey jobKey){
+    public JobDetail getJobDetailByKey(JobKey jobKey) {
         JobDetail jd = null;
         try {
             jd = scheduler.getJobDetail(jobKey);
         } catch (SchedulerException e) {
-            e.printStackTrace();
+            log.error("getJobDetailByKey error!", e);
         }
         return jd;
     }
 
     /**
      * 根据key 获取job trigger
-     * @param jobKey
-     * @return
      */
-    public List<Trigger> getTriggerByKey(JobKey jobKey){
+    public List<Trigger> getTriggerByKey(JobKey jobKey) {
         List<Trigger> triggerList = Lists.newArrayList();
         try {
-            triggerList = (List<Trigger>)scheduler.getTriggersOfJob(jobKey);
+            triggerList = (List<Trigger>) scheduler.getTriggersOfJob(jobKey);
         } catch (SchedulerException e) {
-            e.printStackTrace();
+            log.error("getTriggerByKey error!", e);
         }
         return triggerList;
     }

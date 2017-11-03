@@ -1,12 +1,14 @@
 package com.github.schedulejob.config.datasource;
 
 import com.github.schedulejob.common.AppConst;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource;
 
 import javax.annotation.PostConstruct;
+
 import java.util.Map;
 
 /**
@@ -29,7 +31,7 @@ public class DynamicDatasource extends AbstractRoutingDataSource {
 
     @PostConstruct
     private void initDataSourceMap() {
-        Map<Object,Object> dataSourceMap = dataSourceConfig.getDataSourceMap();
+        Map<Object, Object> dataSourceMap = dataSourceConfig.getDataSourceMap();
         setTargetDataSources(dataSourceMap);
         setDefaultTargetDataSource(dataSourceMap.get(AppConst.DbKey.DEFAULT));
     }

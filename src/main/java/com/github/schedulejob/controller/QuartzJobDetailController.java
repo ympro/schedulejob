@@ -40,48 +40,48 @@ public class QuartzJobDetailController {
     @Autowired
     private QuartzJobDetailService quartzJobDetailService;
 
-    @ApiOperation(value="获取任务列表")
+    @ApiOperation(value = "获取任务列表")
     @GetMapping
-    public ResponseEntity<List<JobDetailDO>> list(){
+    public ResponseEntity<List<JobDetailDO>> list() {
         List<JobDetailDO> jobDetailDOs = quartzJobDetailService.queryJobList();
         return ResponseEntity.ok().body(jobDetailDOs);
     }
 
     @ApiOperation("查询指定jobKey jobDetail")
     @ApiImplicitParams({
-        @ApiImplicitParam(name="group",value="组名",required = true,dataType = "String",
-                paramType="path"),
-        @ApiImplicitParam(name="name",value="名称",required = true,dataType = "String",
-                paramType="path")
+            @ApiImplicitParam(name = "group", value = "组名", required = true, dataType = "String",
+                    paramType = "path"),
+            @ApiImplicitParam(name = "name", value = "名称", required = true, dataType = "String",
+                    paramType = "path")
     })
     @GetMapping("/{group}/{name}")
     public ResponseEntity<JobDetailDO> queryByJobKey(
             @PathVariable String name,
-            @PathVariable String group){
-        JobKey jobKey = new JobKey(name,group);
+            @PathVariable String group) {
+        JobKey jobKey = new JobKey(name, group);
         JobDetailDO jobDetailDO = quartzJobDetailService.queryByKey(jobKey);
         return ResponseEntity.ok().body(jobDetailDO);
     }
 
     @ApiOperation("添加任务Job")
     @PostMapping
-    public ResponseEntity<Boolean> add(@RequestBody JobDetailDO jobDetailDO){
+    public ResponseEntity<Boolean> add(@RequestBody JobDetailDO jobDetailDO) {
         boolean result = quartzJobDetailService.add(jobDetailDO);
         return ResponseEntity.status(HttpStatus.CREATED).body(result);
     }
 
     @ApiOperation("批量删除Job")
     @ApiImplicitParams({
-        @ApiImplicitParam(name = "jobKeyGroups",value = "批量删除的任务")
+            @ApiImplicitParam(name = "jobKeyGroups", value = "批量删除的任务")
     })
     @DeleteMapping
-    public ResponseEntity<Boolean> delete(@RequestBody Map<String,List<String>> jobKeyGroups){
+    public ResponseEntity<Boolean> delete(@RequestBody Map<String, List<String>> jobKeyGroups) {
         List<JobKey> jobKeys = Lists.newArrayList();
-        jobKeyGroups.forEach((k,v) ->
-            v.forEach(name -> {
-                JobKey jobKey = new JobKey(name,k);
-                jobKeys.add(jobKey);
-            })
+        jobKeyGroups.forEach((k, v) ->
+                v.forEach(name -> {
+                    JobKey jobKey = new JobKey(name, k);
+                    jobKeys.add(jobKey);
+                })
         );
         boolean result = quartzJobDetailService.remove(jobKeys);
         return ResponseEntity.ok().body(result);
@@ -89,22 +89,22 @@ public class QuartzJobDetailController {
 
     @ApiOperation("立即触发任务")
     @ApiImplicitParams({
-        @ApiImplicitParam(name = "group",value = "组名",required = true,dataType = "String",
-                paramType = "path"),
-        @ApiImplicitParam(name = "name",value = "任务名",required = true,dataType = "String",
-                paramType = "path"),
-        @ApiImplicitParam(name = "jobData",value = "额外数据",required = true,
-                dataType = "Map<String,Object>",
-                paramType = "body")
+            @ApiImplicitParam(name = "group", value = "组名", required = true, dataType = "String",
+                    paramType = "path"),
+            @ApiImplicitParam(name = "name", value = "任务名", required = true, dataType = "String",
+                    paramType = "path"),
+            @ApiImplicitParam(name = "jobData", value = "额外数据", required = true,
+                    dataType = "Map<String,Object>",
+                    paramType = "body")
     })
     @PostMapping("/{group}/{name}")
     public ResponseEntity<Boolean> triggerNow(@PathVariable String group,
-                              @PathVariable String name,
-                              @RequestBody Map<String,Object> jobData){
-        JobKey jobKey = new JobKey(name,group);
+                                              @PathVariable String name,
+                                              @RequestBody Map<String, Object> jobData) {
+        JobKey jobKey = new JobKey(name, group);
         boolean result = quartzJobDetailService.triggerNow(
-            jobKey,
-            JobDataMapSupport.newJobDataMap(jobData)
+                jobKey,
+                JobDataMapSupport.newJobDataMap(jobData)
         );
         return ResponseEntity.ok().body(result);
     }

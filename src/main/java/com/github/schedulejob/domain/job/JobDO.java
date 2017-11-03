@@ -3,13 +3,16 @@ package com.github.schedulejob.domain.job;
 import com.github.schedulejob.common.AppConst;
 import com.github.schedulejob.schedule.HttpJob;
 import com.github.schedulejob.schedule.ThriftJob;
+
 import io.swagger.annotations.ApiModelProperty;
+
 import org.quartz.Job;
 import org.quartz.JobBuilder;
 import org.quartz.JobDetail;
 import org.quartz.core.jmx.JobDataMapSupport;
 import org.slf4j.Logger;
 import org.springframework.util.ClassUtils;
+
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import java.util.*;
@@ -22,14 +25,14 @@ import java.util.*;
  */
 public class JobDO {
     private static final Logger log = org.slf4j.LoggerFactory.getLogger(JobDO.class);
-    private static final Map<String,Class<? extends Job>> SUPPORTED_JOB_TYPES =
-            new HashMap<String,Class<? extends Job>>(){
-        {
-            put(AppConst.JobType.HTTP_JOB, HttpJob.class);
-            put(AppConst.JobType.THRIFT_JOB, ThriftJob.class);
-        }
-    };
-    private static final Set<String> SUPPORTED_EXT_FIELDS = new HashSet<String>(){
+    private static final Map<String, Class<? extends Job>> SUPPORTED_JOB_TYPES =
+            new HashMap<String, Class<? extends Job>>() {
+                {
+                    put(AppConst.JobType.HTTP_JOB, HttpJob.class);
+                    put(AppConst.JobType.THRIFT_JOB, ThriftJob.class);
+                }
+            };
+    private static final Set<String> SUPPORTED_EXT_FIELDS = new HashSet<String>() {
         {
             add("type");    // AppConst.JobType
             add("method");  // AppConst.HttpMethod or thrift method
@@ -47,28 +50,28 @@ public class JobDO {
 
     // ext info
     // supportExtFields
-    @ApiModelProperty(value = "拓展字段",dataType = "Map[String,Object]")
-    private Map<String,Object> extInfo;
+    @ApiModelProperty(value = "拓展字段", dataType = "Map[String,Object]")
+    private Map<String, Object> extInfo;
 
-    public JobDetail convert2QuartzJobDetail(){
+    public JobDetail convert2QuartzJobDetail() {
         Class<? extends Job> clazz = null;
 
         // 如果未定义 则根据extInfo里type获取默认处理类
         if (Objects.isNull(this.targetClass)) {
             String type = String.valueOf(this.extInfo.get("type"));
             clazz = SUPPORTED_JOB_TYPES.get(type);
-            checkNotNull(clazz,"未找到匹配type的Job");
+            checkNotNull(clazz, "未找到匹配type的Job");
             this.targetClass = clazz.getCanonicalName();
         }
         try {
-            clazz = (Class<Job>)ClassUtils.resolveClassName(this.targetClass, this.getClass().getClassLoader());
+            clazz = (Class<Job>) ClassUtils.resolveClassName(this.targetClass, this.getClass().getClassLoader());
         } catch (IllegalArgumentException e) {
-            log.error("加载类错误",e);
+            log.error("加载类错误", e);
         }
 
         return JobBuilder.newJob()
                 .ofType(clazz)
-                .withIdentity(this.name,this.getGroup())
+                .withIdentity(this.name, this.getGroup())
                 .withDescription(this.description)
                 .setJobData(JobDataMapSupport.newJobDataMap(this.extInfo))
                 .build();

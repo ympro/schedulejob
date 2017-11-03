@@ -1,6 +1,7 @@
 package com.github.schedulejob.util;
 
 import com.google.common.collect.Maps;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,29 +23,30 @@ public class ElapsedTimeUtils {
     private static final ThreadLocal<TimeHolder> threadTimeHolder = new ThreadLocal<>();
 
     private static class TimeHolder {
-        private Map<String,Long> keyElapsedTime;
-        public TimeHolder(){
+        private Map<String, Long> keyElapsedTime;
+
+        public TimeHolder() {
             keyElapsedTime = Maps.newHashMap();
         }
 
-        public boolean canRemoved(){
+        public boolean canRemoved() {
             return Objects.isNull(keyElapsedTime) || keyElapsedTime.isEmpty();
         }
 
-        public void start(String key){
+        public void start(String key) {
 
             // 同一线程内 相同key 直接覆盖
-            keyElapsedTime.put(key,System.nanoTime());
+            keyElapsedTime.put(key, System.nanoTime());
         }
 
-        public long elapse(String key){
+        public long elapse(String key) {
             long endTime = System.nanoTime();
-            long startTime = keyElapsedTime.getOrDefault(key,System.nanoTime());
+            long startTime = keyElapsedTime.getOrDefault(key, System.nanoTime());
             return endTime - startTime;
         }
     }
 
-    public static void time(String key){
+    public static void time(String key) {
         TimeHolder timeHolder = threadTimeHolder.get();
         if (Objects.isNull(timeHolder)) {
             timeHolder = new TimeHolder();
@@ -53,13 +55,13 @@ public class ElapsedTimeUtils {
         timeHolder.start(key);
     }
 
-    public static void timeEnd(String key){
+    public static void timeEnd(String key) {
         TimeHolder timeHolder = threadTimeHolder.get();
         long time = timeHolder.elapse(key);
         if (timeHolder.canRemoved()) {
             threadTimeHolder.remove();
         }
         long threadId = Thread.currentThread().getId();
-        log.info("thread: {} | key: {} | {}ms",threadId, key, TimeUnit.NANOSECONDS.toMillis(time));
+        log.info("thread: {} | key: {} | {}ms", threadId, key, TimeUnit.NANOSECONDS.toMillis(time));
     }
 }

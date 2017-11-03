@@ -18,7 +18,7 @@ import java.lang.annotation.Target;
 @Documented
 @Inherited  // 声明注解可继承
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE,ElementType.METHOD})
+@Target({ElementType.TYPE, ElementType.METHOD})
 public @interface TargetDataSource {
     String value() default "";
 }

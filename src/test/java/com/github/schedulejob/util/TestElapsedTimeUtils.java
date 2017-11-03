@@ -12,8 +12,9 @@ import java.util.concurrent.TimeUnit;
  */
 public class TestElapsedTimeUtils {
     private static final ScheduledExecutorService EXECUTOR = Executors.newScheduledThreadPool(1);
+
     public static void main(String[] args) {
-        EXECUTOR.scheduleAtFixedRate(()->{
+        EXECUTOR.scheduleAtFixedRate(() -> {
             final Thread currentThread = Thread.currentThread();
             currentThread.setName("测试线程~");
             ElapsedTimeUtils.time("x");
@@ -23,6 +24,6 @@ public class TestElapsedTimeUtils {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-        },1,2, TimeUnit.SECONDS);
+        }, 1, 2, TimeUnit.SECONDS);
     }
 }

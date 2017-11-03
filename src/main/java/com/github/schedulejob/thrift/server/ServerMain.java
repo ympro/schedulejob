@@ -2,6 +2,7 @@ package com.github.schedulejob.thrift.server;
 
 import com.github.schedulejob.thrift.protocol.HelloService;
 import com.github.schedulejob.thrift.serviceimpl.HelloServiceImpl;
+
 import org.apache.thrift.TMultiplexedProcessor;
 import org.apache.thrift.TProcessorFactory;
 import org.apache.thrift.protocol.TCompactProtocol;
@@ -22,6 +23,7 @@ public class ServerMain {
     private static final Logger log = LoggerFactory.getLogger(ServerMain.class);
 
     private static final int PORT = 7777;
+
     public static void main(String[] args) {
         try {
             // 设置服务端口为 7777
@@ -29,7 +31,7 @@ public class ServerMain {
 
             // 关联处理器与 HelloService 服务的实现
             TMultiplexedProcessor tMultiplexedProcessor = new TMultiplexedProcessor();
-            tMultiplexedProcessor.registerProcessor("HelloService",new HelloService.Processor(new HelloServiceImpl()));
+            tMultiplexedProcessor.registerProcessor("HelloService", new HelloService.Processor(new HelloServiceImpl()));
 
             TThreadedSelectorServer.Args threadedSelectorServerArgs = new TThreadedSelectorServer.Args(nonBlockingServerSocket);
             TProcessorFactory processorFactory = new TProcessorFactory(tMultiplexedProcessor);
@@ -42,7 +44,7 @@ public class ServerMain {
             threadedSelectorServerArgs.transportFactory(new TFramedTransport.Factory());
 
             TThreadedSelectorServer server = new TThreadedSelectorServer(threadedSelectorServerArgs);
-            log.info("server start listen on {0}...",PORT);
+            log.info("server start listen on {0}...", PORT);
             server.serve();
         } catch (TTransportException e) {
             e.printStackTrace();

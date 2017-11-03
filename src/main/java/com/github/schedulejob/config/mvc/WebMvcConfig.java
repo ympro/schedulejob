@@ -1,6 +1,7 @@
 package com.github.schedulejob.config.mvc;
 
 import com.github.schedulejob.interceptor.RequestHandleTimeInterceptor;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.HttpMessageConverter;

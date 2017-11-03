@@ -25,7 +25,7 @@ public class IDGeneratorUtil {
     private long dataCenterId;
     private long sequence = 0L;
     private long lastTimestamp = -1L;
-    private static final IDGeneratorUtil DEFAULT_GENERATOR = new IDGeneratorUtil(0,0);
+    private static final IDGeneratorUtil DEFAULT_GENERATOR = new IDGeneratorUtil(0, 0);
 
     public IDGeneratorUtil(long workerId, long dataCenterId) {
         if (workerId > maxWorkerId || workerId < 0) {
@@ -69,7 +69,7 @@ public class IDGeneratorUtil {
         return System.currentTimeMillis();
     }
 
-    public static String getTraceId(String serviceName){
+    public static String getTraceId(String serviceName) {
         StringBuffer sb = new StringBuffer(serviceName);
         sb.append(DEFAULT_GENERATOR.nextId());
         return sb.toString();
@@ -77,11 +77,11 @@ public class IDGeneratorUtil {
 
     public static void main(String[] args) {
         IDGeneratorUtil idWorker = new IDGeneratorUtil(0, 0);
-        IntStream.rangeClosed(1,1000).forEach(
-            index -> {
-                long id = idWorker.nextId();
-                System.out.println(id);
-            }
+        IntStream.rangeClosed(1, 1000).forEach(
+                index -> {
+                    long id = idWorker.nextId();
+                    System.out.println(id);
+                }
         );
     }
 }

@@ -5,6 +5,7 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
@@ -23,7 +24,7 @@ import java.util.Arrays;
 public class JacksonHttpMessageConverterConfig {
 
     @Bean
-    public ObjectMapper objectMapper(){
+    public ObjectMapper objectMapper() {
         Jackson2ObjectMapperBuilder j2omb = new Jackson2ObjectMapperBuilder();
         return j2omb.autoDetectFields(true)
                 .autoDetectGettersSetters(true)
@@ -46,7 +47,7 @@ public class JacksonHttpMessageConverterConfig {
     }
 
     @Bean
-    public MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter(){
+    public MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter() {
         MappingJackson2HttpMessageConverter mj2mc = new MappingJackson2HttpMessageConverter();
         mj2mc.setDefaultCharset(Charset.forName("utf-8"));
         mj2mc.setPrettyPrint(false);

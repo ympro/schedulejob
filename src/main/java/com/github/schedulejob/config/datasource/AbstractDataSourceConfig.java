@@ -1,9 +1,11 @@
 package com.github.schedulejob.config.datasource;
 
 import com.github.schedulejob.common.AppConst;
+
 import com.google.common.collect.Maps;
 
 import javax.sql.DataSource;
+
 import java.util.Map;
 
 /**
@@ -24,11 +26,13 @@ public abstract class AbstractDataSourceConfig {
 
     // 数据源
     protected abstract DataSource defaultDataSource();
+
     protected abstract DataSource readDataSource();
+
     protected abstract DataSource writeDataSource();
 
-    public Map<Object,Object> getDataSourceMap(){
-        Map<Object,Object> dataMap = Maps.newHashMap();
+    public Map<Object, Object> getDataSourceMap() {
+        Map<Object, Object> dataMap = Maps.newHashMap();
 
         dataMap.put(AppConst.DbKey.DEFAULT, this.defaultDataSource());
         dataMap.put(AppConst.DbKey.READ, this.readDataSource());
